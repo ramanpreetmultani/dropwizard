@@ -48,7 +48,7 @@ public class EmployeeRESTController {
         // validation
         Set<ConstraintViolation<Employee>> violations = validator.validate(employee);
         Employee e = EmployeeDB.getEmployee(employee.getId());
-        System.out.println(e + " hHhha");
+        
         if (violations.size() > 0) {
             ArrayList<String> validationMessages = new ArrayList<String>();
             for (ConstraintViolation<Employee> violation : violations) {
