@@ -22,6 +22,7 @@ public class App extends Application<Configuration>
     public void run(Configuration c, Environment e) throws Exception {
         LOGGER.info("Registering REST resources");
         e.jersey().register(new EmployeeRESTController(e.getValidator()));
+
     }
 
     public static void main(String[] args) throws Exception {

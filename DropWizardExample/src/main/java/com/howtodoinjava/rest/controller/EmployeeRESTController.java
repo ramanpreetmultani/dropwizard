@@ -7,13 +7,7 @@ import java.util.Set;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
@@ -37,8 +31,9 @@ public class EmployeeRESTController {
     }
 
     @GET
-    @Path("/{id}")
-    public Response getEmployeeById(@PathParam("id") Integer id) {
+    @Path("/id")
+    public Response getEmployeeById(@DefaultValue("1")@QueryParam("id") Integer id) {
+        System.out.println(id);
         Employee employee = EmployeeDB.getEmployee(id);
         if (employee != null)
             return Response.ok(employee).build();
@@ -47,10 +42,13 @@ public class EmployeeRESTController {
     }
 
     @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
     public Response createEmployee(Employee employee) throws URISyntaxException {
         // validation
         Set<ConstraintViolation<Employee>> violations = validator.validate(employee);
         Employee e = EmployeeDB.getEmployee(employee.getId());
+        System.out.println(e + " hHhha");
         if (violations.size() > 0) {
             ArrayList<String> validationMessages = new ArrayList<String>();
             for (ConstraintViolation<Employee> violation : violations) {
@@ -58,7 +56,7 @@ public class EmployeeRESTController {
             }
             return Response.status(Status.BAD_REQUEST).entity(validationMessages).build();
         }
-        if (e != null) {
+        if (e == null) {
             EmployeeDB.updateEmployee(employee.getId(), employee);
             return Response.created(new URI("/employees/" + employee.getId()))
                     .build();
